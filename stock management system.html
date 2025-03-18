@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: url("https://www.wealthandfinance-news.com/wp-content/uploads/2022/12/well-im-n.jpg") no-repeat center center fixed;
+            background-size: cover; /* Ensures the image covers the entire screen */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white for better readability */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+        .button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .form-section, .dashboard, .form-fields {
+            display: none;
+        }
+        .dashboard {
+            margin-top: 20px;
+        }
+        .section {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .section:hover {
+            background-color: #0056b3;
+        }
+        input[type="text"], input[type="password"], input[type="number"], input[type="date"] {
+            display: block;
+            width: calc(100% - 20px);
+            margin: 10px auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        label {
+            margin-top: 10px;
+            display: block;
+            color: #333;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Management System</h1>
+        
+        <!-- Login Buttons -->
+        <button class="button" onclick="showLoginForm('admin')">Admin Login</button>
+        <button class="button" onclick="showLoginForm('user')">User Login</button>
+
+        <!-- Login Forms -->
+        <div id="admin-login" class="form-section">
+            <h2>Admin Login</h2>
+            <input type="text" id="admin-username" placeholder="Admin Username">
+            <input type="password" id="admin-password" placeholder="Admin Password">
+            <button class="button" onclick="handleLogin('admin')">Login</button>
+        </div>
+        <div id="user-login" class="form-section">
+            <h2>User Login</h2>
+            <input type="text" id="user-username" placeholder="User Username">
+            <input type="password" id="user-password" placeholder="User Password">
+            <button class="button" onclick="handleLogin('user')">Login</button>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="admin-dashboard" class="dashboard">
+            <h2>Admin Section</h2>
+            <div class="section" onclick="showAdminForm('add-stock')">Add Stocks</div>
+            <div class="section" onclick="showAdminForm('view-stock')">View Stocks</div>
+            <div class="section" onclick="logout()">Logout</div>
+        </div>
+
+        <!-- User Dashboard -->
+        <div id="user-dashboard" class="dashboard">
+            <h2>User Section</h2>
+            <div class="section" onclick="showUserForm('order-stock')">Order Stocks</div>
+            <div class="section" onclick="showUserForm('return-stock')">Return Stocks</div>
+            <div class="section" onclick="logout()">Logout</div>
+        </div>
+
+        <!-- Admin Forms -->
+        <div id="add-stock-form" class="form-fields">
+            <h2>Add Stock</h2>
+            <label>Stock Name:</label>
+            <input type="text" id="stock-name" placeholder="Enter Stock Name">
+            <label>Stock Quantity:</label>
+            <input type="number" id="stock-quantity" placeholder="Enter Stock Quantity">
+            <label>Stock Price:</label>
+            <input type="number" id="stock-price" placeholder="Enter Stock Price">
+            <button class="button" onclick="addStock()">Add Stock</button>
+        </div>
+
+        <!-- User Forms -->
+        <div id="order-stock-form" class="form-fields">
+            <h2>Order Stock</h2>
+            <label>Stock ID:</label>
+            <input type="text" id="order-stock-id" placeholder="Enter Stock ID">
+            <label>User ID:</label>
+            <input type="text" id="order-user-id" placeholder="Enter User ID">
+            <label>Order Date:</label>
+            <input type="date" id="order-date">
+            <button class="button" onclick="orderStock()">Order Stock</button>
+        </div>
+        <div id="return-stock-form" class="form-fields">
+            <h2>Return Stock</h2>
+            <label>Stock ID:</label>
+            <input type="text" id="return-stock-id" placeholder="Enter Stock ID">
+            <label>User ID:</label>
+            <input type="text" id="return-user-id" placeholder="Enter User ID">
+            <label>Fine (per day):</label>
+            <input type="number" id="fine-per-day" placeholder="Enter Fine Per Day">
+            <button class="button" onclick="returnStock()">Return Stock</button>
+        </div>
+    </div>
+
+    <script>
+        function showLoginForm(role) {
+            hideAll();
+            document.getElementById(`${role}-login`).style.display = 'block';
+        }
+
+        function handleLogin(role) {
+            const username = document.getElementById(`${role}-username`).value;
+            const password = document.getElementById(`${role}-password`).value;
+
+            if ((role === 'admin' && username === 'admin' && password === 'admin') ||
+                (role === 'user' && username === 'user' && password === 'user')) {
+                alert(`Welcome, ${role.charAt(0).toUpperCase() + role.slice(1)}!`);
+                hideAll();
+                document.getElementById(`${role}-dashboard`).style.display = 'block';
+            } else {
+                alert('Invalid credentials!');
+            }
+        }
+
+        function showAdminForm(formId) {
+            hideAll();
+            document.getElementById(`${formId}-form`).style.display = 'block';
+        }
+
+        function showUserForm(formId) {
+            hideAll();
+            document.getElementById(`${formId}-form`).style.display = 'block';
+        }
+
+        function logout() {
+            alert('Logged out successfully!');
+            hideAll();
+        }
+
+        function hideAll() {
+            const elements = document.querySelectorAll('.form-section, .dashboard, .form-fields');
+            elements.forEach(el => el.style.display = 'none');
+        }
+
+        function addStock() {
+            alert('Stock added successfully!');
+        }
+
+        function orderStock() {
+            alert('Stock ordered successfully!');
+        }
+
+        function returnStock() {
+            alert('Stock returned successfully!');
+        }
+    </script>
+</body>
+</html>
